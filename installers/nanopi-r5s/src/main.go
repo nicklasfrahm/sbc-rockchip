@@ -18,21 +18,22 @@ import (
 
 const (
 	off int64 = 512 * 64
-	dtb       = "rockchip/rk3399-nanopi-r4s.dtb"
+	dtb       = "rockchip/rk3568-nanopi-r5s.dtb"
 )
 
 func main() {
-	adapter.Execute(&nanopir4s{})
+	adapter.Execute(&nanopir5s{})
 }
 
-type nanopir4s struct{}
+type nanopir5s struct{}
 
-type nanopir4sExtraOptions struct{}
+type nanopir5sExtraOptions struct{}
 
-func (i *nanopir4s) GetOptions(extra nanopir4sExtraOptions) (overlay.Options, error) {
+func (i *nanopir5s) GetOptions(extra nanopir5sExtraOptions) (overlay.Options, error) {
 	return overlay.Options{
-		Name: "nanopi-r4s",
+		Name: "nanopi-r5s",
 		KernelArgs: []string{
+			// TODO: Is this the same for all SBCs?
 			"console=tty0",
 			"console=ttyS2,1500000n8",
 			"sysctl.kernel.kexec_load_disabled=1",
@@ -44,7 +45,7 @@ func (i *nanopir4s) GetOptions(extra nanopir4sExtraOptions) (overlay.Options, er
 	}, nil
 }
 
-func (i *nanopir4s) Install(options overlay.InstallOptions[nanopir4sExtraOptions]) error {
+func (i *nanopir5s) Install(options overlay.InstallOptions[nanopir5sExtraOptions]) error {
 	var f *os.File
 
 	f, err := os.OpenFile(options.InstallDisk, os.O_RDWR|unix.O_CLOEXEC, 0o666)
@@ -54,8 +55,7 @@ func (i *nanopir4s) Install(options overlay.InstallOptions[nanopir4sExtraOptions
 
 	defer f.Close() //nolint:errcheck
 
-	// TODO: Should this not be "nanopi-r4s" instead of "rockpi4"?
-	uboot, err := os.ReadFile(filepath.Join(options.ArtifactsPath, "arm64/u-boot/rockpi4/u-boot-rockchip.bin"))
+	uboot, err := os.ReadFile(filepath.Join(options.ArtifactsPath, "arm64/u-boot/nanopi-r5s/u-boot-rockchip.bin"))
 	if err != nil {
 		return err
 	}
