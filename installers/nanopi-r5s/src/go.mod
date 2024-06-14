@@ -1,4 +1,4 @@
-module nanopi-r4s
+module nanopi-r5s
 
 go 1.22.1
 
