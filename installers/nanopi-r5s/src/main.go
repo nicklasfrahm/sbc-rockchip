@@ -19,6 +19,13 @@ import (
 const (
 	off int64 = 512 * 64
 	dtb       = "rockchip/rk3568-nanopi-r5s.dtb"
+
+//	udevNetRuleFile       = "70-persistent-net.rules"
+//	udevNetRule           = `SUBSYSTEM=="net", ACTION=="add", KERNELS=="fe2a0000.ethernet", NAME:="wan"
+//
+// SUBSYSTEM=="net", ACTION=="add", KERNELS=="0000:01:00.0", NAME:="lan1"
+// SUBSYSTEM=="net", ACTION=="add", KERNELS=="0001:01:00.0", NAME:="lan2"
+// `
 )
 
 func main() {
@@ -80,5 +87,27 @@ func (i *nanopir5s) Install(options overlay.InstallOptions[nanopir5sExtraOptions
 		return err
 	}
 
-	return copy.File(src, dst)
+	if err := copy.File(src, dst); err != nil {
+		return err
+	}
+
+	// const udevRuleDir = "/etc/udev/rules.d"
+
+	// err = os.MkdirAll(filepath.Dir(udevRuleDir), 0o600)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to create udev rule directory: %w", err)
+	// }
+
+	// udevNetRuleFileHandle, err := os.Create(filepath.Join(options.MountPrefix, udevRuleDir, udevNetRuleFile))
+	// if err != nil {
+	// 	return fmt.Errorf("failed to create udev rule file: %w", err)
+	// }
+	// defer udevNetRuleFileHandle.Close() //nolint:errcheck
+
+	// _, err = udevNetRuleFileHandle.WriteString(udevNetRule)
+	// if err != nil {
+	// 	return fmt.Errorf("failed to write udev rule file: %w", err)
+	// }
+
+	return nil
 }
